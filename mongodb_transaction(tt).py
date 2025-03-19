@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from pymongo.client_session import ClientSession
 
-# Thông tin kết nối MongoDB (Thay thế bằng URI của bạn)
+# Thông tin kết nối MongoDB
 MONGO_URI = "mongodb+srv://quang10a2k38:Qh3102dt@cluster0.rgbbm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 # Kết nối MongoDB
@@ -25,12 +25,10 @@ def transfer_money(session: ClientSession, sender: str, receiver: str, amount: i
     Thực hiện giao tác tập trung: chuyển tiền từ sender sang receiver trong cùng một collection.
     """
     try:
-        # Bắt đầu transaction
         session.start_transaction()
 
-        # Trừ tiền từ sender (nếu có đủ tiền)
         result1 = accounts.update_one(
-            {"_id": sender, "balance": {"$gte": amount}},  # Đảm bảo sender có đủ tiền
+            {"_id": sender, "balance": {"$gte": amount}}, 
             {"$inc": {"balance": -amount}},
             session=session
         )
